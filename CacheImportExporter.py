@@ -13,6 +13,7 @@ import pymel.core as pc
 import random, string
 import os
 import MayaInterface
+op = os.path
 reload(MayaInterface)
 MI = MayaInterface
 import xml.dom.minidom as xdm
@@ -129,6 +130,15 @@ def createClass(*arg):
                     self.fpsDisplay.display({"pal": 25, "ntsc": 30, "film": 24}[pc.general.currentUnit(q= True, t = True)])
             except:
                 pass
+        
+        def changePath(self, fileDialog, lineEdit):
+            path = str(lineEdit.text()).strip('"')
+            if op.exists(path):
+                fileDialog.setDirectory(path)
+            else:
+                lineEdit.selectAll()
+                pc.warning("Invalid path: %s" %path)
+           
 
         def createCustomFileDialog(self, fileType, multiple = False):
 
@@ -136,6 +146,7 @@ def createClass(*arg):
 
             fileDialog = QtGui.QFileDialog(self)
             fileDialog.setNameFilter(fileType)
+            
             fileDialog.setSizeGripEnabled(False)
             if multiple: fileDialog.setFileMode(QtGui.QFileDialog.FileMode(3))
             default = set([os.path.abspath(url.path()+"/"*2) for url in fileDialog.sidebarUrls()])
@@ -148,8 +159,12 @@ def createClass(*arg):
             map(lambda x: layout.addWidget(theFileDialog[2+x]), xrange(8))
             thisIsMyFileDialog.layout().addLayout(layout,0,0)
             thisIsMyFileDialog.layout().addWidget(theFileDialog[10])
-            theFileDialog[10].children()[1].model()
+            lineEdit = QtGui.QLineEdit(self)
+            lineEdit.setText(fileDialog.directory().path())
             model = theFileDialog[10].children()[1].model()
+            lineEdit.setToolTip("Set path")
+            lineEdit.returnPressed.connect(lambda: self.changePath(fileDialog, lineEdit))
+            thisIsMyFileDialog.layout().addWidget(lineEdit)
             def update_fav(*args):
                 model = theFileDialog[10].children()[1].model()
                 allUrls = []
