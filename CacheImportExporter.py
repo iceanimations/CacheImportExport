@@ -14,16 +14,19 @@ import random, string
 import os
 import MayaInterface
 op = os.path
-reload(MayaInterface)
+# reload(MayaInterface)
 MI = MayaInterface
 import xml.dom.minidom as xdm
 
 Qt = QtCore.Qt
 
 def getStartEndTimeAndFPS(filePath):
+
     dom = xdm.parse(filePath)
-    timeRange = dom.getElementsByTagName("time")[0].getAttribute("Range").split("-")
-    timePerFrame = int(dom.getElementsByTagName("cacheTimePerFrame")[0].getAttribute("TimePerFrame"))
+    timeRange = (dom.getElementsByTagName
+                 ("time")[0].getAttribute("Range").split("-"))
+    timePerFrame = int(dom.getElementsByTagName("cacheTimePerFrame")
+                       [0].getAttribute("TimePerFrame"))
     FPS = 6000/ timePerFrame
     return int(timeRange[0])/timePerFrame, int(timeRange[1])/timePerFrame , FPS
 
@@ -83,7 +86,8 @@ def createClass(*arg):
             if drop.mimeData().hasUrls() and hasattr(item, "default"):
                 mesh = self.cacheTableWidget.item(index.row(), 0).text()
                 replacer = lambda x: x.toString().replace(r"file:///","")
-                refs = [replacer(url) for url in drop.mimeData().urls() if not QtCore.QFileInfo(replacer(url)).isDir()]
+                refs = [replacer(url) for url in drop.mimeData().urls()
+                        if not QtCore.QFileInfo(replacer(url)).isDir()]
                 if refs and refs[0].split(r"file:")[0]:
                     refs = refs[0] #contain no or one item
                 else:
@@ -94,13 +98,15 @@ def createClass(*arg):
                 item.setFont(font)
                 self.cacheItems[mesh] = refs
                 start_end_fps = getStartEndTimeAndFPS(refs)
-                map(lambda x: self.cacheTableWidget.item(index.row(), x + 2).setText(str(start_end_fps[x])), xrange(len(start_end_fps)))
+                map(lambda x:
+                    self.cacheTableWidget.item(index.row(),
+                                               x + 2).setText(
+                                                   str(start_end_fps[x])),
+                    xrange(len(start_end_fps)))
                 drop.acceptProposedAction()
 
         def cacheDragLeave(self, event):
             event.accept()
-
-
 
         def refDragLeave(self, event):
             event.accept()
@@ -138,7 +144,6 @@ def createClass(*arg):
             else:
                 lineEdit.selectAll()
                 pc.warning("Invalid path: %s" %path)
-           
 
         def createCustomFileDialog(self, fileType, multiple = False):
 
@@ -198,15 +203,29 @@ def createClass(*arg):
                     self.setListWidget.addItem(self.setItems[selection])
 
         def getSelection(self):
-            setSelections = [x.name() for x in pc.ls(sl = True, type = "objectSet") if (type(x) == pc.nt.ObjectSet and x.members() and isinstance(x.members()[0], pc.nt.Transform) and x.members()[0].getShape(ni=True, type= "mesh"))]
-            setSelections += [x.name() for x in pc.ls(sl = True, type = "mesh", dag = True, ni = True)]
+
+            setSelections = [x.name()
+                             for x in pc.ls(sl = True,
+                                            type = "objectSet")
+                             if (type(x) == pc.nt.ObjectSet and
+                                 x.members() and
+                                 isinstance(x.members()[0],
+                                            pc.nt.Transform) and
+                                 x.members()[0].getShape(ni=True,
+                                                         type = "mesh"))]
+
+            setSelections += [x.name() for x in pc.ls(sl = True,
+                                                      type = "mesh",
+                                                      dag = True,
+                                                      ni = True)]
             return setSelections
 
         def makeConnections(self):
             self.exportCacheButton.clicked.connect(self.exportCache)
             self.startendButton.toggled.connect(self.setStartEnd)
             self.setListWidget.doubleClicked.connect(self.sceneSelect)
-            map(lambda x: x.pressed.connect(self.toggle), [self.timeSliderButton, self.startendButton])
+            map(lambda x: x.pressed.connect(self.toggle),
+                [self.timeSliderButton, self.startendButton])
             self.dirSelectButton.clicked.connect(self.locationSelect)
             self.exportFileDialog.fileSelected.connect(self.cacheDirLineEdit.setText)
             self.cacheDirLineEdit.textChanged.connect(self.setCacheDir)
@@ -226,9 +245,13 @@ def createClass(*arg):
 
             #finding the minimum start time and the maximum end time
             #and adjust the render global settings and the timeline accordingly
-            minStartTime, maxEndTime = getStartEndTimeAndFPS(self.cacheItems[self.cacheItems.keys()[0]])[0:2]
+            minStartTime, maxEndTime = getStartEndTimeAndFPS(self.cacheItems
+                                                             [self.cacheItems.
+                                                              keys()
+                                                              [0]])[0:2]
             for node in self.cacheItems:
-                startTime, endTime = getStartEndTimeAndFPS(self.cacheItems[node])[0:2]
+                startTime, endTime = getStartEndTimeAndFPS(self.cacheItems
+                                                           [node])[0:2]
 
                 #check if current startTime and endTime is less and greater
                 #then the minStartTime and maxEndTime.
@@ -240,15 +263,28 @@ def createClass(*arg):
                 if isinstance(pc.PyNode(node), pc.nt.Mesh):
                     MI.applyCache(node, self.cacheItems[node])
                 else:
-                    meshes = [shape for transform in pc.PyNode(node).dsm.inputs(type = "transform") for shape in transform.getShapes(type = "mesh", ni = True)]
+                    meshes = [shape
+                              for transform in pc.PyNode(node).dsm.inputs(
+                                      type = "transform")
+                              for shape in transform.getShapes(type = "mesh",
+                                                               ni = True)]
+
                     result = pc.polyUnite(*meshes, ch = True)
-                    pc.rename(result[0].getShapes(ni = True, type = "mesh")[0], node.split(":")[-1]+"_shape_combined")
+
+                    pc.rename(result[0].getShapes(ni = True,
+                                                  type = "mesh")[0],
+                              node.split(":")[-1]+"_shape_combined")
+
                     pc.rename(result[0], node.split(":")[-1]+"_combined")
-                    MI.applyCache(result[0].getShapes(ni = True, type = "mesh")[0].name(), self.cacheItems[node])
+                    MI.applyCache(result[0].getShapes(ni = True,
+                                                      type = "mesh")[0].name(),
+                                  self.cacheItems[node])
             pc.select(selection)
 
             #setting the timeline and render settings:
-            pc.playbackOptions(max = maxEndTime, aet = maxEndTime, min = minStartTime, ast = minStartTime)
+            pc.playbackOptions(max = maxEndTime, aet = maxEndTime,
+                               min = minStartTime,
+                               ast = minStartTime)
             pc.PyNode("defaultRenderGlobals").startFrame.set(minStartTime)
             pc.PyNode("defaultRenderGlobals").endFrame.set(maxEndTime)
 
@@ -262,7 +298,10 @@ def createClass(*arg):
                         self.cacheItems.pop(selection.text())
                     except:
                         continue
-            map(lambda x: self.cacheTableWidget.removeRow(self.cacheTableWidget.row(x)), [item for item in self.cacheTableWidget.selectedItems() if hasattr(item, "default")])
+            map(lambda x: self.cacheTableWidget.removeRow
+                (self.cacheTableWidget.row(x)),
+                [item for item in self.cacheTableWidget.selectedItems()
+                 if hasattr(item, "default")])
 
 
         def clearCacheList(self):
@@ -285,7 +324,14 @@ def createClass(*arg):
 
                     self.cacheTableWidget.insertRow(rowCount)
                     setOrNot = type(pc.PyNode(selection)) == pc.nt.ObjectSet
-                    self.cacheItems[selection] = " " if setOrNot else MI.cacheApplied(selection).getFileName()[0] if MI.cacheApplied(selection) else None
+
+                    self.cacheItems[selection] = (" "
+                                                  if setOrNot
+                                                  else
+                                                  MI.cacheApplied
+                                                  (selection).getFileName()[0]
+                                                  if MI.cacheApplied(selection)
+                                                  else None)
                     nameTableItem = QtGui.QTableWidgetItem(selection)
                     nameTableItem.setFlags(Qt.ItemFlags(1+4+8+32))
                     self.cacheTableWidget.setItem(rowCount, 0, nameTableItem)
@@ -301,12 +347,20 @@ def createClass(*arg):
                         item.setFlags(Qt.ItemFlags(1+4+8+32))
                         return item
                     xml = ""
-                    if not setOrNot: xml = MI.cacheApplied(selection).getFileName(q= 1)[0] if MI.cacheApplied(selection) else ""
+                    if not setOrNot:
+                        xml = (MI.cacheApplied(selection).getFileName(q= 1)[0]
+                               if MI.cacheApplied(selection) else "")
                     details = tuple(["","",""])
                     if xml: details = tuple(getStartEndTimeAndFPS(xml))
-                    self.cacheTableWidget.setItem(rowCount, 2, itemCreator(str(details[0]) if details else ""))
-                    self.cacheTableWidget.setItem(rowCount, 3, itemCreator(str(details[1]) if details else ""))
-                    self.cacheTableWidget.setItem(rowCount, 4, itemCreator(str(details[2]) if details else ""))
+                    self.cacheTableWidget.setItem(rowCount, 2,
+                                                  itemCreator(str(details[0])
+                                                              if details else ""))
+                    self.cacheTableWidget.setItem(rowCount, 3,
+                                                  itemCreator(str(details[1])
+                                                              if details else ""))
+                    self.cacheTableWidget.setItem(rowCount, 4,
+                                                  itemCreator(str(details[2])
+                                                              if details else ""))
 
 
 
@@ -318,12 +372,14 @@ def createClass(*arg):
         def remRef(self):
             selections = self.refListWidget.selectedItems()
             map(self.refItems.pop, map(lambda x : x.text(), selections))
-            map(lambda x: self.refListWidget.takeItem(self.refListWidget.indexFromItem(x).row()), selections)
+            map(lambda x: self.refListWidget.takeItem
+                (self.refListWidget.indexFromItem(x).row()), selections)
 
         def removeSet(self):
             selections = self.setListWidget.selectedItems()
             map(self.setItems.pop, map(lambda x : x.text(), selections))
-            map(lambda x: self.setListWidget.takeItem(self.setListWidget.indexFromItem(x).row()), selections)
+            map(lambda x: self.setListWidget.takeItem
+                (self.setListWidget.indexFromItem(x).row()), selections)
 
         def clearSetList(self):
             self.setListWidget.clear()
@@ -337,7 +393,8 @@ def createClass(*arg):
             self.exportFileDialog.show()
 
         def toggle(self):
-            stateTimer, stateStartEnd = self.timeSliderButton.isEnabled(),  self.startendButton.isEnabled()
+            stateTimer, stateStartEnd = (self.timeSliderButton.isEnabled(),
+                                         self.startendButton.isEnabled())
             self.timeSliderButton.setEnabled(stateStartEnd)
             self.startendButton.setEnabled(stateTimer)
 
@@ -345,13 +402,15 @@ def createClass(*arg):
             pc.select(self.setListWidget.itemFromIndex(index).text())
 
         def setStartEnd(self, enable):
-            map(lambda x : x.setEnabled(enable), [self.startendLabel, self.endTime, self.startTime])
+            map(lambda x: x.setEnabled(enable),
+                [self.startendLabel, self.endTime, self.startTime])
 
         def exportCache(self):
 
             selection = pc.ls(sl = True)
             flags = {"version": 5,
-                     "time_range_mode": 2 if self.timeSliderButton.isChecked() else 0,
+                     "time_range_mode": (2 if self.timeSliderButton.isChecked()
+                                         else 0),
                      "start_time": self.startTime.text(),
                      "end_time": self.endTime.text(),
                      "cache_file_dist": "OneFile",
@@ -369,9 +428,14 @@ def createClass(*arg):
                      "cache_format": "mcc"}
 
             combineMeshes = []
-            for objectSet in [setName for setName in self.setItems if type(pc.PyNode(setName)) != pc.nt.Mesh]:
+            for objectSet in [setName for setName in self.setItems
+                              if type(pc.PyNode(setName)) != pc.nt.Mesh]:
                 pc.select(pc.PyNode(objectSet).members())
-                meshes = [shape for transform in pc.PyNode(objectSet).dsm.inputs(type = "transform") for shape in transform.getShapes(type = "mesh", ni = True)]
+                meshes = [shape
+                          for transform in pc.PyNode(objectSet).dsm.inputs(
+                                  type = "transform")
+                          for shape in transform.getShapes(type = "mesh",
+                                                           ni = True)]
                 combineMesh = pc.createNode("mesh")
                 pc.rename(combineMesh, objectSet.split(":")[-1]+"_cache")
                 combineMeshes.append(combineMesh)
@@ -380,7 +444,9 @@ def createClass(*arg):
                     meshes[i].outMesh >> polyUnite.inputPoly[i]
                     meshes[i].worldMatrix[0] >> polyUnite.inputMat[i]
                 polyUnite.output >> combineMesh.inMesh
-            pc.select(combineMeshes + [mesh for mesh in self.setItems if type(pc.PyNode(mesh)) == pc.nt.Mesh])
+            pc.select(combineMeshes + [mesh
+                                       for mesh in self.setItems
+                                       if type(pc.PyNode(mesh)) == pc.nt.Mesh])
 
             try:
                 command =  'doCreateGeometryCache2 {version} {{ "{time_range_mode}", "{start_time}", "{end_time}", "{cache_file_dist}", "{refresh_during_caching}", "{cache_dir}", "{cache_per_geo}", "{cache_name}", "{cache_name_as_prefix}", "{action_to_perform}", "{force_save}", "{simulation_rate}", "{sample_multiplier}", "{inherit_modf_from_cacha}", "{store_doubles_as_float}", "{cache_format}"}};'.format(**flags)
@@ -389,7 +455,8 @@ def createClass(*arg):
             finally:
                 pc.delete(map(lambda x: x.getParent(),combineMeshes))
                 pc.select(selection)
-                pc.informBox("Exported", "All meshes in the list have been exported", "OK")
+                pc.informBox("Exported",
+                             "All meshes in the list have been exported", "OK")
 
         def fillItems(self):
             if "diskCache" not in pc.Workspace.fileRules.keys():
@@ -398,7 +465,11 @@ def createClass(*arg):
             diskCache = self.diskCache
             sceneName = self.sceneName = pc.sceneName()
             projectPath = pc.Workspace.getPath()
-            self.cacheDir = cacheDir = os.path.abspath(os.path.join(projectPath, diskCache, ".".join(os.path.basename(sceneName).split(".")[0:-1])))
+            self.cacheDir = cacheDir = os.path.abspath(
+                os.path.join(projectPath,
+                             diskCache,
+                             ".".join(os.path.basename
+                                      (sceneName).split(".")[0:-1])))
             for item in self.setItems:
                 item.cacheDir = cacheDir
                 item.cacheName = item.text().split(":")[-1] + "_cache"

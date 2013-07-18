@@ -41,5 +41,9 @@ def applyCache(node, xmlFilePath):
     pc.mel.doImportCacheFile(xmlFilePath, "", [node], list())
 
 def cacheApplied(mesh):
-    cacheFiles = [node for node in pc.PyNode(mesh).listHistory() if isinstance(node, pc.nt.CacheFile)]
-    return cacheFiles[0] if cacheFiles else None
+    cacheFiles = [node for node in pc.PyNode(mesh).listHistory()
+                  if isinstance(node, pc.nt.CacheFile)]
+    for cacheFile in cacheFiles:
+        if cacheFile.getFileName():
+            return cacheFile
+    return None
