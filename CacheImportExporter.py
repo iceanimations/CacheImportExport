@@ -456,9 +456,9 @@ class GUI(Form, Base):
                          "All meshes in the list have been exported", "OK")
 
     def fillItems(self):
-        if "diskCache" not in pc.Workspace.fileRules.keys():
-            pc.Workspace.fileRules["diskCache"] = u"data"
-        self.diskCache = pc.Workspace.fileRules["diskCache"]
+        #if "diskCache" not in pc.Workspace.fileRules.keys():
+        #    pc.Workspace.fileRules["diskCache"] = u"data"
+        self.diskCache = pc.workspace(fre='diskCache') #pc.Workspace.fileRules["diskCache"]
         diskCache = self.diskCache
         sceneName = self.sceneName = pc.sceneName()
         projectPath = pc.Workspace.getPath()
