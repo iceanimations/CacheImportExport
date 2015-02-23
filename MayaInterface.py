@@ -26,16 +26,17 @@ def addReferences(paths):
         @params: List of paths to be reherenced
     '''
     for path in paths:
-        # get the existing references
-        #exists = mc.file(r = True, q = True)
-        #if path in exists:
-        #    mc.file(path, loadReference = True)
-        # create reference
-        #else:
         try:
             mc.file(path, r = True)
-        except RuntimeError:
-            mc.error('file not found')
+        except Exception as ex:
+            mc.error(str(ex))
+            
+def importFiles(paths):
+    for path in paths:
+        try:
+            mc.file(path, i=True)
+        except Exception as ex:
+            mc.error(str(ex))
 
 def applyCache(node, xmlFilePath):
     pc.mel.doImportCacheFile(xmlFilePath, "", [node], list())

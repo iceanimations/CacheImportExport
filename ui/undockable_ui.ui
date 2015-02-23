@@ -350,7 +350,7 @@
           </property>
           <widget class="QWidget" name="tab_3">
            <attribute name="title">
-            <string>Add References</string>
+            <string>Reference/Import</string>
            </attribute>
            <layout class="QHBoxLayout" name="horizontalLayout_10">
             <item>
@@ -413,24 +413,48 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="remRefButton">
-                  <property name="text">
-                   <string>Remove</string>
-                  </property>
-                  <property name="flat">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="addRefButton">
-                  <property name="text">
-                   <string>Add these references</string>
-                  </property>
-                  <property name="flat">
-                   <bool>false</bool>
-                  </property>
-                 </widget>
+                 <layout class="QHBoxLayout" name="horizontalLayout_6">
+                  <item>
+                   <spacer name="horizontalSpacer_3">
+                    <property name="orientation">
+                     <enum>Qt::Horizontal</enum>
+                    </property>
+                    <property name="sizeHint" stdset="0">
+                     <size>
+                      <width>40</width>
+                      <height>20</height>
+                     </size>
+                    </property>
+                   </spacer>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="addRefButton">
+                    <property name="text">
+                     <string>References</string>
+                    </property>
+                    <property name="flat">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="importButton">
+                    <property name="text">
+                     <string>Import</string>
+                    </property>
+                   </widget>
+                  </item>
+                  <item>
+                   <widget class="QPushButton" name="remRefButton">
+                    <property name="text">
+                     <string>Remove</string>
+                    </property>
+                    <property name="flat">
+                     <bool>false</bool>
+                    </property>
+                   </widget>
+                  </item>
+                 </layout>
                 </item>
                </layout>
               </widget>
@@ -510,7 +534,7 @@
                   </column>
                   <column>
                    <property name="text">
-                    <string>Cache applied</string>
+                    <string>Cache</string>
                    </property>
                   </column>
                   <column>
@@ -536,7 +560,7 @@
                    <item>
                     <widget class="QPushButton" name="addImpSelButton">
                      <property name="text">
-                      <string>Add selected sets/meshes</string>
+                      <string>Add Selection</string>
                      </property>
                      <property name="flat">
                       <bool>false</bool>
@@ -556,12 +580,25 @@
                    <item>
                     <widget class="QPushButton" name="remImpSelButton">
                      <property name="text">
-                      <string>Remove</string>
+                      <string>Remove Selection</string>
                      </property>
                      <property name="flat">
                       <bool>false</bool>
                      </property>
                     </widget>
+                   </item>
+                   <item>
+                    <spacer name="horizontalSpacer_4">
+                     <property name="orientation">
+                      <enum>Qt::Horizontal</enum>
+                     </property>
+                     <property name="sizeHint" stdset="0">
+                      <size>
+                       <width>40</width>
+                       <height>20</height>
+                      </size>
+                     </property>
+                    </spacer>
                    </item>
                   </layout>
                  </widget>
@@ -572,7 +609,7 @@
                    <string>Apply the cache(s)</string>
                   </property>
                   <property name="text">
-                   <string>Apply</string>
+                   <string>Apply Cache</string>
                   </property>
                   <property name="flat">
                    <bool>false</bool>

@@ -45,6 +45,8 @@ class GUI(Form, Base):
         self.exportFileDialog = QtGui.QFileDialog(self)
         self.exportFileDialog.setModal(True)
         self.exportFileDialog.setFileMode(QtGui.QFileDialog.FileMode(2))
+        
+        self.importButton.clicked.connect(self.importFile)
 
 
         self.splitter_2.addWidget(self.createCustomFileDialog("Maya File (*.ma *.mb)", True))
@@ -365,7 +367,11 @@ class GUI(Form, Base):
 
     def addRef(self):
         MI.addReferences(self.refItems.values())
-        print self.refItems.values()
+        self.refItems.clear()
+        self.refListWidget.clear()
+    
+    def importFile(self):
+        MI.importFiles(self.refItems.values())
         self.refItems.clear()
         self.refListWidget.clear()
 
