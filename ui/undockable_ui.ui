@@ -268,7 +268,7 @@
            <string>Add Selection</string>
           </property>
           <property name="flat">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -278,7 +278,7 @@
            <string>Remove</string>
           </property>
           <property name="flat">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -288,7 +288,7 @@
            <string>Clear List</string>
           </property>
           <property name="flat">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -311,7 +311,7 @@
            <string>Export</string>
           </property>
           <property name="flat">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -340,7 +340,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>1</number>
+           <number>0</number>
           </property>
           <property name="documentMode">
            <bool>true</bool>
@@ -418,7 +418,7 @@
                    <string>Remove</string>
                   </property>
                   <property name="flat">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -428,7 +428,7 @@
                    <string>Add these references</string>
                   </property>
                   <property name="flat">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -539,7 +539,7 @@
                       <string>Add selected sets/meshes</string>
                      </property>
                      <property name="flat">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </property>
                     </widget>
                    </item>
@@ -549,7 +549,7 @@
                       <string>Clear List</string>
                      </property>
                      <property name="flat">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </property>
                     </widget>
                    </item>
@@ -559,7 +559,7 @@
                       <string>Remove</string>
                      </property>
                      <property name="flat">
-                      <bool>true</bool>
+                      <bool>false</bool>
                      </property>
                     </widget>
                    </item>
@@ -575,7 +575,7 @@
                    <string>Apply</string>
                   </property>
                   <property name="flat">
-                   <bool>true</bool>
+                   <bool>false</bool>
                   </property>
                  </widget>
                 </item>
@@ -599,7 +599,7 @@
      <x>0</x>
      <y>0</y>
      <width>672</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>

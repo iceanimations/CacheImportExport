@@ -13,6 +13,7 @@ import qtify_maya_window as qtfy
 import pymel.core as pc
 import os
 import MayaInterface
+reload(MayaInterface)
 op = os.path
 MI = MayaInterface
 import xml.dom.minidom as xdm
@@ -108,9 +109,10 @@ class GUI(Form, Base):
     def addReferenceToList(self, drop):
         replacer = lambda x: x.toString().replace(r"file:///","")
         refs = [replacer(url) for url in drop.mimeData().urls() if not QtCore.QFileInfo(replacer(url)).isDir()]
-        for ref in [ref for ref in refs if ref not in self.refItems.keys() and ref.split(r"file:")[0]]:
-            self.refItems[ref] = QtGui.QListWidgetItem(ref)
-            self.refListWidget.addItem(self.refItems[ref])
+        for ref in [ref for ref in refs if ref.split(r"file:")[0]]:
+            item = QtGui.QListWidgetItem(ref)
+            self.refItems[item] = ref
+            self.refListWidget.addItem(item)
         drop.acceptProposedAction()
 
     def refDragMovement(self, event):
@@ -362,13 +364,14 @@ class GUI(Form, Base):
 
 
     def addRef(self):
-        MI.addReferences(self.refItems.keys())
+        MI.addReferences(self.refItems.values())
+        print self.refItems.values()
         self.refItems.clear()
         self.refListWidget.clear()
 
     def remRef(self):
         selections = self.refListWidget.selectedItems()
-        map(self.refItems.pop, map(lambda x : x.text(), selections))
+        map(self.refItems.pop, selections)
         map(lambda x: self.refListWidget.takeItem
             (self.refListWidget.indexFromItem(x).row()), selections)
 

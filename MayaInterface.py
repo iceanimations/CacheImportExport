@@ -17,7 +17,7 @@ a given Maya file, and query and attach Cache Nodes on a Mesh
 import maya.cmds as mc
 import pymel.all as pc
 
-def addReferences(paths = []):
+def addReferences(paths):
     '''
         This function creates a reference of the specified file
         if the file is already refenced, this function loads the file if
@@ -27,15 +27,15 @@ def addReferences(paths = []):
     '''
     for path in paths:
         # get the existing references
-        exists = mc.file(r = True, q = True)
-        if path in exists:
-            mc.file(path, loadReference = True)
+        #exists = mc.file(r = True, q = True)
+        #if path in exists:
+        #    mc.file(path, loadReference = True)
         # create reference
-        else:
-            try:
-                mc.file(path, r = True)
-            except RuntimeError:
-                mc.error('file not found')
+        #else:
+        try:
+            mc.file(path, r = True)
+        except RuntimeError:
+            mc.error('file not found')
 
 def applyCache(node, xmlFilePath):
     pc.mel.doImportCacheFile(xmlFilePath, "", [node], list())
