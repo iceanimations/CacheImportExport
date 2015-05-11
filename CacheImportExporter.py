@@ -60,7 +60,7 @@ class GUI(Form, Base):
         self.cacheItems = {}
         self.cacheTableWidget.viewport().setAcceptDrops(True)
         self.cacheTableWidget.dragEnterEvent = self.cacheTableWidget.dragMoveEvent = self.cacheDragMovement
-        self.cacheTableWidget.dropEvent = self.addCacheToMesh
+        self.cacheTableWidget.dropEvent = self.callAddCacheToMesh
         self.cacheTableWidget.dragLeaveEvent = self.cacheDragLeave
 
         self.refItems = {}
@@ -76,9 +76,17 @@ class GUI(Form, Base):
     def cacheDragMovement(self, event):
         if event.mimeData().hasUrls():
             event.acceptProposedAction()
+            
+    def callAddCacheToMesh(self, event):
+        items = self.cacheTableWidget.selectedItems()
+        if items:
+            for item in self.cacheTableWidget.selectedItems():
+                self.addCacheToMesh(item, event)
+        else:
+            self.addCacheToMesh(self.cacheTableWidget.itemAt(event.pos()), event)
 
-    def addCacheToMesh(self, drop):
-        item = self.cacheTableWidget.itemAt(drop.pos())
+    def addCacheToMesh(self, item, drop):
+        #item = self.cacheTableWidget.itemAt(drop.pos())
         index = self.cacheTableWidget.indexFromItem(item)
         if drop.mimeData().hasUrls() and hasattr(item, "default"):
             mesh = self.cacheTableWidget.item(index.row(), 0).text()
